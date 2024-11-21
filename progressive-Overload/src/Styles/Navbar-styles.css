@@ -1,6 +1,21 @@
 .navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: gray;
+  color: white;
+  font-family: "Exo 2", sans-serif;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.right-side-nav {
     display: flex;
-    justify-content:space-between;
-    align-items: center;
-    top: 0;
+    margin-right: 50px;
+}
+
+.currentWeek {
+    margin-right: 20px;
 }
