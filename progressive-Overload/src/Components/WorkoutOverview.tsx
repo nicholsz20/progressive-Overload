@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { MyContext } from "../Context/ContextProvider";
 
 interface ExerciseMax {
   id: string;
@@ -8,6 +9,8 @@ interface ExerciseMax {
   increment: number;
 }
 export default function WorkoutOverview() {
+    const { edit, setEdit, currentWeek, setCurrentWeek } = React.useContext(MyContext);
+
   const [exercises, setExercises] = useState<ExerciseMax[]>(() => {
     const saved = localStorage.getItem("exerciseData");
     const initialData = [
@@ -47,6 +50,22 @@ export default function WorkoutOverview() {
     localStorage.setItem("exerciseData", JSON.stringify(exercises));
   }, [exercises]);
 
+  const handleUpdateMax = (id: string, newMax: number) => {
+    setExercises(exercises.map(exercise => 
+        exercise.id === id 
+        ? { ...exercise, max: newMax}
+        : exercise
+        ))
+  }
+
+  const handleUpdateIncrement = (id: string, newIncrement: number) => {
+    setExercises(exercises.map(exercise =>
+        exercise.id === id
+        ? { ...exercise, increment: newIncrement}
+        : exercise 
+        ))
+  }
+
   const calculateWeight = (
     max: number,
     percentage: number,
@@ -61,5 +80,29 @@ export default function WorkoutOverview() {
     return Math.round(totalWeight / 5) * 5;
   };
 
-  return <div>WorkoutOverview</div>;
+  return (
+  <>
+  {exercises.map(exercise => (
+    <div key={exercise.id} className="exercise-container">
+        <div className="">
+            <h2 className="exercise-header">{exercise.name}</h2>
+            {edit && (
+                <div className="items">
+                        <div>
+                            <label className="max-label">
+                                Max:
+                            </label>
+                            <input type="number" value={exercise.max} onChange={(e) => handleUpdateMax(exercise.id, Number(e.target.value))} className="max-input"/>
+                        </div>
+                        <div>
+                            <label className="weekly-header">Weekly Increment:</label>
+                            <input type="number" value={exercise.increment} onChange={(e) => handleUpdateIncrement(exercise.id, Number(e.target.value))} className="weekly-increment" />
+                        </div>
+                </div>
+            )}
+        </div>
+    </div>
+    ))}
+    </>
+    );
 }
